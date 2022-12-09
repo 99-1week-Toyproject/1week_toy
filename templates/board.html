@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Title</title>
+</head>
+<style>
+    ul {
+        list-style-type: none;
+    }
+
+    textarea {
+        width: 50%;
+        height: 120px;
+        resize: none;
+    }
+
+    table {
+        background-color: #F6F6F6;
+        border-color: white;
+        border-collapse: collapse;
+    }
+
+    .navigationBar {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .navigationBar_contents {
+        margin-right: 20px;
+    }
+
+    .board_submit {
+        display: none;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        boardGet();
+    });
+    function openSubmit() {
+        $("#board_submit").show()
+    }
+
+    function closeSubmit() {
+        $("#board_submit").hide()
+    }
+
+    function boardGet() {
+        $.ajax({
+            type: "GET",
+            url: "/board/get",
+            data: {},
+            success: function (response) {
+                console.log(response['board_list'])
+
+                let board_lists = response['board_list']
+
+                for (let i = 0; i < board_lists.length; i++) {
+                    let board_id = board_lists[i]['id']
+                    let board_index = board_lists[i]['index']
+                    let board_text = board_lists[i]['text']
+                    let board_title = board_lists[i][['title']]
+
+                    let addToBoard = ` <div class="board_contents_li">
+                                                <span class="index">${board_index}</span>
+                                                <h3 class="board_contents_title">
+                                                    <a>${board_title}</a>
+                                                    <span class="comment_cnt">[12]</span>
+                                                </h3>
+                                            </div>`
+
+                    $("#board_content_wrap").append(addToBoard)
+                }
+            }
+        });
+    }
+
+    function boardPost() {
+        let submit_id = $("#submit_id").val()
+        let submit_title = $("#submit_title").val()
+        let submit_text = $("#submit_text").val()
+
+        $.ajax({
+            type: "POST",
+            url: "/board/post",
+            data: {
+                board_id_give: submit_id,
+                board_title_give: submit_title,
+                board_text_give: submit_text
+            },
+            success: function (response) {
+                alert(response["msg"])
+                window.location.reload()
+
+            }
+        });
+    }
+</script>
+
+<body>
+    <h3>(temp)홈으로 돌아가는 텍스트 or 이미지</h3>
+    <ul class="navigationBar">
+        <li class="navigationBar_contents"><a>(임시 네비게이션 바)</a></li>
+        <li class="navigationBar_contents"><a>홈화면</a></li>
+        <li class="navigationBar_contents"><a>자유게시판</a></li>
+    </ul>
+    <br>
+    <button onclick="openSubmit()">글쓰기</button>
+    <br>
+
+    <!-- ##########글쓰기 버튼을 누르면 나오는 창입니다.############# -->
+    <div class="board_submit" id="board_submit">
+        <div class="board_submit_id">
+            <h3>id</h3>
+            <!-- ##########데이터 전송을 위해 readonly 처리하였습니다!######### -->
+            <input id="submit_id" type="text" value="${사용자 아이디}" readonly></input>
+        </div>
+
+        <div class="board_submit_title">
+            <h3>제목</h3>
+            <input id="submit_title" type=" text"></input>
+        </div>
+
+        <div class="board_submit_text">
+            <h3>내용</h3>
+            <textarea id="submit_text"></textarea>
+        </div>
+        <br>
+
+        <div class="board_submit_btns">
+            <button onclick="boardPost()">등록하기</button>
+            <button onclick="closeSubmit()">취소</button>
+        </div>
+    </div>
+    <br>
+
+    <ul class="board_contents_wrap" id="board_content_wrap">
+        <li class="board_contents">
+
+            <!-- <div class="board_contents_li">
+                <span class="index">index</span>
+                <h3 class="board_contents_title">
+                    <a>제목같은 걸 쓰고싶은 것일까</a>
+                    <span class="comment_cnt">[12]</span>
+                </h3>
+            </div> -->
+
+
+        </li>
+
+    </ul>
+
+
+
+</body>
+
+</html>

@@ -7,3 +7,8 @@
   ex)joinPage_pwTest 
 
 구글시트 : https://docs.google.com/spreadsheets/d/1tXFjkejFzB6e2K_AHVaTKIASXdmFWQrStxOdRP_PbJI/edit#gid=1609782659
+
+User1 : 유현승
+User2 : 이신정
+User3 : 차재현
+User4 : 이정우

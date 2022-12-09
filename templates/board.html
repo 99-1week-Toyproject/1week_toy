@@ -35,10 +35,22 @@
     .board_submit {
         display: none;
     }
+
+    .board_submit_reply_wrap {
+        display: none;
+        background-color: aliceblue;
+    }
+
+    .board_submit_reply {
+        display: flex;
+        align-items: flex-start;
+        margin-top: 20px;
+    }
 </style>
 <script>
     $(document).ready(function () {
         boardGet();
+        boardReply_Get();
     });
     function openSubmit() {
         $("#board_submit").show()
@@ -46,6 +58,14 @@
 
     function closeSubmit() {
         $("#board_submit").hide()
+    }
+
+    function boardReply_open(num) {
+        $("#board_submit_reply_wrap" + num).show()
+    }
+
+    function boardReply_close(num) {
+        $("#board_submit_reply_wrap" + num).hide()
     }
 
     function boardGet() {
@@ -62,19 +82,62 @@
                     let board_id = board_lists[i]['id']
                     let board_index = board_lists[i]['index']
                     let board_text = board_lists[i]['text']
-                    let board_title = board_lists[i][['title']]
+                    let board_title = board_lists[i]['title']
 
                     let addToBoard = ` <div class="board_contents_li">
-                                                <span class="index">${board_index}</span>
+                                                <div class="index">${board_index}</div>
                                                 <h3 class="board_contents_title">
                                                     <a>${board_title}</a>
                                                     <span class="comment_cnt">[12]</span>
+                                                    <button onclick = "boardReply_open(${board_index})">댓글달기</button>
                                                 </h3>
+                                                <h5>${board_text}</h5>
+                                                <div class = "replyCheck" id = "${board_index}">
+                                                    
+                                                </div>
+                                                    <div class="board_submit_reply_wrap" id="board_submit_reply_wrap${board_index}">
+                                                        <div class="board_submit_reply">
+                                                            <input id="board_reply_nickname${board_index}" type="text" placeholder="닉네임"
+                                                                style="margin-right: 20px;"></input>
+                                                            <textarea id="board_reply_text${board_index}" onkeydown="replyKeyDown()"
+                                                                placeholder="타인을 비난하는 댓글은 마음이 참 아파요 ㅠ&#13;&#10;Shift + Enter 키를 동시에 누르면 줄바꿈이 됩니다."></textarea>
+                                                        </div>
+                                                        <div class="board_submit_reply_btn">
+                                                            <button onclick="boardReply_submit(${board_index})">등록</button>
+                                                            <button onclick="boardReply_close(${board_index})">취소</button>
+                                                        </div>
+                                                    </div>
+                                                <hr>
                                             </div>`
 
                     $("#board_content_wrap").append(addToBoard)
                 }
             }
+        });
+    }
+
+    function boardReply_Get() {
+        $.ajax({
+            type: "GET",
+            url: "/board/get/reply",
+            data: {},
+            success: function (response) {
+                let replyList = response['board_reply_list']
+
+
+                for (let i = 0; i < replyList.length; i++) {
+                    let board_reply_index = replyList[i]['index']
+                    let board_reply_name = replyList[i]['name']
+                    let board_reply_text = replyList[i]['text']
+
+                    let replyAdd = `<li>↳<b>${board_reply_name}</b>&nbsp;${board_reply_text}</li>`
+
+                    $("#" + board_reply_index).append(replyAdd)
+
+                }
+            }
+
+
         });
     }
 
@@ -98,6 +161,38 @@
             }
         });
     }
+
+    function boardReply_submit(board_contents_index) {
+        let reply_name = $("#board_reply_nickname" + board_contents_index).val()
+        let reply_text = $("#board_reply_text" + board_contents_index).val()
+
+        $.ajax({
+            type: "POST",
+            url: "/board/post/reply",
+            data: {
+                reply_name_give: reply_name,
+                reply_text_give: reply_text,
+                reply_index_give: board_contents_index
+            },
+            success: function (response) {
+                alert(response["msg"])
+                window.location.reload()
+
+            }
+        });
+    }
+
+    function replyKeyDown() {
+        if (window.event.keyCode == 13) {
+            boardReply_submit()
+        }
+    }
+
+
+
+
+
+
 </script>
 
 <body>
@@ -139,14 +234,11 @@
 
     <ul class="board_contents_wrap" id="board_content_wrap">
         <li class="board_contents">
+            <div class="board_contents_li">
 
-            <!-- <div class="board_contents_li">
-                <span class="index">index</span>
-                <h3 class="board_contents_title">
-                    <a>제목같은 걸 쓰고싶은 것일까</a>
-                    <span class="comment_cnt">[12]</span>
-                </h3>
-            </div> -->
+
+
+            </div>
 
 
         </li>

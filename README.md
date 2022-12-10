@@ -11,7 +11,7 @@
 - notion) https://www.notion.so/99-1-84a57d7318734d7e9beea6c3ac3abf2e
 
 ## branch name by user 
-- User1 : 유현승 (현재 boardPage 브랜치로 작업 중)
+- User1 : 유현승 boardPage done! / 현재 loginPage에서 
 - User2 : 이신정
 - User3 : 차재현
 - User4 : 이정우

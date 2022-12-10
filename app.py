@@ -27,6 +27,7 @@ def board_post():
     board_title_receive = request.form['board_title_give']
     board_id_receive = request.form['board_id_give']
     board_text_receive = request.form['board_text_give']
+    board_cntValue_receive = request.form['board_cntValue_give']
 
     board_list = list(db.gameReview.find({}, {'_id': False}))
     board_cnt = len(board_list) + 1
@@ -35,7 +36,8 @@ def board_post():
         'index': board_cnt,
         'title': board_title_receive,
         'id': board_id_receive,
-        'text': board_text_receive
+        'text': board_text_receive,
+        'cntValue': board_cntValue_receive
     }
 
     db.gameReview.insert_one(insertDoc)
@@ -65,6 +67,28 @@ def board_get_reply():
     board_reply_list = list(db.gameReview_reply.find({}, {'_id': False}))
 
     return jsonify({'board_reply_list': board_reply_list})
+
+
+# @app.route("/board/get/reply/cnt", methods=["GET"])
+# def board_get_reply_cnt():
+#     ########################일단 리스트 다 가져옴
+#     board_reply_list = list(db.gameReview_reply.find({}, {'_id': False}))
+#     board_post_list = list(db.gameReview.find({},{'_id':False}))
+
+# ########################잘 나오나?
+#     print(board_reply_list)
+#     print(board_post_list)
+
+# #######################댓글의 인덱스 번호를 가져옴
+#     board_reply_cntList = []
+
+#     for board_reply_listed in board_reply_list:
+#         print(board_reply_listed)
+#         board_reply_cntList.append(board_reply_listed['index'])
+
+#     print(board_reply_cntList)
+
+    # return jsonify({'board_reply_list': board_reply_list})
 
 
 if __name__ == '__main__':

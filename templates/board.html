@@ -68,6 +68,12 @@
         $("#board_submit_reply_wrap" + num).hide()
     }
 
+
+     // #################################################
+    // ##  DB에서  title / text / reply 가져옵니다.                           ##
+    // ##  필요 요소의 변수에 index 부여합니다.                            ##
+    // #################################################
+
     function boardGet() {
         $.ajax({
             type: "GET",
@@ -116,6 +122,12 @@
         });
     }
 
+    // ###########################################################
+    // ##  이번에 채택한 방식은 contents와 reply의 index를 연결하고                 ##
+    // ##   contents 하기에 reply를 list로 붙이는 방식으로 했습니다.                   ##
+    // ##   다른 아이디어도 몇 개 더 있었는데 일단 이 방식으로 채택하였습니다    ##
+    // ###########################################################
+
     function boardReply_Get() {
         $.ajax({
             type: "GET",
@@ -141,6 +153,10 @@
         });
     }
 
+    // ###########################################################
+    // ##  contents post section입니다                                                         ##
+    // ###########################################################
+
     function boardPost() {
         let submit_id = $("#submit_id").val()
         let submit_title = $("#submit_title").val()
@@ -162,6 +178,11 @@
         });
     }
 
+     // ###########################################################
+    // ##  reply post section입니다.                                                             ##
+    // ##  댓글을 달고싶은 contents와 연결을 위해 contents index와 연동합니다.   ##
+    // ###########################################################
+
     function boardReply_submit(board_contents_index) {
         let reply_name = $("#board_reply_nickname" + board_contents_index).val()
         let reply_text = $("#board_reply_text" + board_contents_index).val()
@@ -182,11 +203,19 @@
         });
     }
 
-    function replyKeyDown() {
-        if (window.event.keyCode == 13) {
-            boardReply_submit()
-        }
-    }
+
+    // #################################################
+    // ##  엔터키 누르면 자동입력되도록 하려고 했음,                    ##
+    // ##  하지만 입력필드가 다중이기 때문에                              ##
+    // ##  해당 코드는 에러를 유발할 확률이 굉장히 높아 제거         ##
+    // #################################################
+
+    
+    // function replyKeyDown() {
+    //     if (window.event.keyCode == 13) {
+    //         boardReply_submit()
+    //     }
+    // }
 
 
 

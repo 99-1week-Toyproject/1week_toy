@@ -1,10 +1,168 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <title>이 게임 어때?</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        .mytitle {
+            width: 100%;
+            height: 250px;
+
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://www.shutterstock.com/image-vector/neon-game-controller-controlling-pc-260nw-1925516489.jpg');
+            background-position: center;
+            background-size: 100% 110%;
+
+            color: white;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+
+        .wrap {
+            height: 10px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mygame {
+            width: 500px;
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mygame > input {
+            width: 70%;
+        }
+
+
+
+
+        .mybox > li {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 10px;
+            min-height: 5px;
+        }
+
+        .mybox > li > h2 {
+            max-width: 75%;
+            font-size: 20px;
+            font-weight: 500;
+            margin-right: auto;
+            margin-bottom: 0px;
+        }
+
+
+    </style>
+
+    <script>
+        $(document).ready(function() {
+            show_game();
+        });
+
+        function show_game() {
+
+            $('#game-list').empty()
+
+            $.ajax({
+                type: "GET",
+                url: "/game",
+                data: {},
+                success: function (response) {
+                    let rows = response['games']
+                    for (let i = 0; i < rows.length; i++) {
+                        let game = rows[i]['game']
+                        let num = rows[i]['num']
+                        let done = rows[i]['done']
+
+                        let temp_html = ``
+                        if (done == 0) {
+
+                            temp_html = `<li>
+                                                <h2> ${game}</h2>
+                                            </li>`
+
+                        } else {
+                            temp_html = `<li>
+                                        <h2 class="done"> ${game}</h2>
+                                    </li>`
+                        }
+                        $('#game-list').append(temp_html)
+                    }
+                }
+            });
+        }
+
+        function save_game() {
+            let game = $('#game').val()
+            $.ajax({
+                type: "POST",
+                url: "/game",
+                data: {game_give: game},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+<div class="mytitle">
+    <h1>게임 리뷰하기</h1>
+</div>
+
+</div>
+
+<div class="wrap" style =" border: 10px; max-width: 300px; margin: 10%; padding: 10%;">
+    <div class="card" style="width: auto; padding: 5px;">
+        <img src="https://www.androidheadlines.com/wp-content/uploads/2021/06/Lost-Ark-US-Launch.jpg;"
+             class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">Lost Ark</h5>
+            <p class="card-text"> 로스트아크 입니다.</p>
+            <div class="mybox" id="game-list">
+            </div>
+                <div class="mygame">
+                    <input id="game" class="form-control" type="text" placeholder="리뷰해주세요">
+                    <button onclick="save_game()" type="button" class="btn btn-outline-primary"> 리뷰하기</button>
+                  </div>
+             </div>
+        </div>
+    </div>
+</div>
+</div>
 </body>
+
 </html>

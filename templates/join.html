@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <!-- 제이쿼리-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- 제이쿼리 쿠키 컨트롤 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <!-- 비밀번호 입력 필드에 넣을 아이콘을 위한  CDN-->
+    <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
+
+    <link href="../static/join.css" rel="stylesheet">
+
+
+</head>
+<script>
+    // 일단 내가 준비한 자바스크립트가 준비되면 실행되어야 하니까!!
+    // 왜 이걸 사용했냐면, 처음에는 그냥 스크립트를 작성하니까 html이 준비되기도 전에 document 객체에 대한 함수들이 실행되는 문제가 나오는 가능성이 있었습니다.
+    // 예를 들면, 밑에보시면 저는 입력 필드의 값을 하나의 class로 묶어서 값을 받아오려고 하는데 이게 준비되기도 전에 자바스크립트가 실행되어버리기 때문입니다.
+    window.onload = function () {
+
+        // 먼저 html의 데이터들을 싹 다 긁어옵니다.
+        let join = document.join
+
+        // 사용자가 입력하는 값들을 전부 가져오는 변수입니다.
+        // queryselectorall은 값들을 list로 순차적으로 가져옵니다.
+        // 0은 아이디 입력값, 1은 비밀번호 입력값, 2는 비밀번호 재확인 입력값이 되겠죠?
+        let input = document.querySelectorAll('.join_inputCheck')
+
+        // 에러가 나타나는 span의 id들입니다
+        // 이게 꼭 있어야 합니다. 어디서 난 에러인지를 추적하고 이어줄 수 있습니다.
+        let errorID = ["idError", "pwError", "pwCheckError"]
+
+        // 입력창 하단에 뜨는 에러메시지를 가져오는 변수입니다.
+        // 제가 생각한 전략은 이전에 게시판 기능때처럼 텍스트를 넣어주는 전략을 떠올렸습니다.
+        // 에러가 들어갈 위치를 span으로 잡고, span이 들어갈 위치에 상황에 맞는 텍스트를 집어넣을 겁니다.
+        let error = document.querySelectorAll('.join_list > span')
+
+
+
+        //  에러메시지 초기화
+        //  처음엔 파라미터에 아무것도 안넣었는데 이러면 뭘 초기화 할 지 안 정해주는 것이랑 똑같은 것이라고 생각하였습니다.
+        //  이 부분에서 좀 헤맸는데, 아직도 확실하지 않습니다.
+        //  여기는 좀 더 제대로 조사하고 결과 전달드리겠습니다.
+        function errorMsgReset(error) {
+            for (let i = 0; i < error.length; i++) {
+                error[i].innerHTML = "";
+            }
+        }
+
+        errorMsgReset(error);
+
+        // id유효성 검사
+        // 지금 join이라는 html에서 'ID'라는 input태그안에서 키보드가 눌리는 것을 추적하면서 해당 함수를 실행하라는 말입니다.
+        //  정규식으로 아이디 생성 조건 만들기
+        //  test는 정규식 함수입니다! 해당 정규식에 찾으려는 문자열이 있는지를 확인해 줍니다.(return값은 boolean입니다.)
+        // 위에 설명드렸지만 input 을 이미 queryselectorall로 list를 만들었습니다. match는 그냥 원하는 인덱스의 value만 확인하면 됩니다
+        // 그래서 즉, 값이 false면 해당 span에 이 text를 붙여라
+
+        join.ID.onkeydown = function () {
+            errorMsgReset(error);
+            let idValidCheck_limit = /^[a-zA-Z0-9]{5,20}$/;
+
+            if (!idValidCheck_limit.test(input[0].value)) {
+                document.getElementById(errorID[0]).innerHTML = "5~10자 이내의 영문, 숫자를 사용해 주세요."
+
+            } else {
+
+            }
+        }
+
+        // pw유효성 검사
+        // id와 마찬가지 입니다.
+        join.PW.onkeydown = function () {
+            errorMsgReset(error);
+            let pwValidCheck_limit = /^[a-zA-Z0-9!@#$%()]{8,16}$/
+
+            if (!pwValidCheck_limit.test(input[1].value)) {
+                document.getElementById(errorID[1]).innerHTML = "8~16자 영문, 숫자, 특수문자[! , @ , # , $ , % , ( , )]를 사용해 주세요."
+
+            } else {
+
+            }
+        }
+        // pw 동일한지 유효성 검사. 해당 기능은 가입하기 버튼을 눌렀을때 확인하도록 구현할 예정
+        join.PW_2.onkeydown = function () {
+            errorMsgReset(error)
+        }
+
+        function join_submit() {
+            errorMsgReset(error)
+        }
+
+        document.getElementById('joinBtn').onclick = function () {
+            errorMsgReset(error);
+
+            // 일단 input이 공백이라면?
+            // 일단 나는 사용자가 입력한 값들을 list로 가지고 있으니 이걸 통해 검증하는 전략
+            // 원래는 return만 써주면 함수를 끝내니까 이것만 있으면 되겠다고 생각했는데, false를 안주면 그냥 멘트가 사라지는 문제가 있었습니다.
+            for (let i = 0; i < input.length; i++) {
+                if (!input[i].value) {
+                    document.getElementById(errorID[i]).innerHTML = "값을 입력해 주세요!"
+                    input[i].focus()
+                    return false
+                }
+            }
+
+            // while문을 사용할까 했는데 제 머리론 못하겠습니다.
+
+            if (join.PW.value != join.PW_2.value) {
+                document.getElementById(errorID[2]).innerHTML = "비밀번호가 일치하지 않습니다."
+                join.PW_2.focus()
+                return false
+            }
+
+            if (!/^[a-zA-Z0-9]{5,20}$/.test(input[0].value)) {
+                document.getElementById(errorID[0]).innerHTML = "5~10자 이내의 영문, 숫자를 사용해 주세요."
+                join.ID.focus()
+                return false
+            }
+
+            // $.ajax({
+            //     type: 'POST',
+            //     url: '/join/idCheck',
+            //     data: {
+            //         join_IDcheck_give: $("#ID").val()
+            //     },
+            //     success: function (response) {
+            //         if (response['result'] == 'success') {
+
+            //         } else if (response['result'] == 'fail') {
+            //             alert('중복된 ID입니다.')
+            //             // document.getElementById(errorID[0]).innerHTML = "중복된 ID입니다."
+            //             join.ID.focus()
+            //             return
+            //         }
+            //     }
+            // });
+
+
+            if (!/^[a-zA-Z0-9!@#$%()]{8,16}$/.test(input[1].value)) {
+                document.getElementById(errorID[1]).innerHTML = "8~16자 영문, 숫자, 특수문자[! , @ , # , $ , % , ( , )]를 사용해 주세요."
+                join.PW.focus()
+                return false
+            }
+
+            let join_ID_value = $("#ID").val()
+            let join_PW_value = $("#PW").val()
+
+            $.ajax({
+                type: 'POST',
+                url: '/join',
+                data: {
+                    join_ID_give: join_ID_value,
+                    join_PW_give: join_PW_value,
+                },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert('회원가입 완료!')
+                        window.location.href = '/login'
+                    } else {
+                        alert(response['msg'])
+                        location.reload()
+                    }
+                }
+            });
+        }
+        // alert('회원가입이 완료되었습니다!')
+        // window.location.href = '/login'
+    }
+
+
+
+</script>
+
+
+<body>
+    <!-- html안에 있는 값들을 다 받아오기 위해서 전체를 form로 묶어주었음. -->
+    <!-- 왜냐면 나는 여기 html 안에 있는 class와 id를 적극적으로 활용하기 위한 전략을 사용할 것이기 때문입니다! -->
+    <!-- div로 묶어주니 html의 값을 가져오지 못하는 문제가 있었습니다. -->
+    <!-- form이라는 게 input의 value를 넘길 때 쓰이는 것이니 해당 html 의 value를 취합할 수 있었습니다.  -->
+
+    <form name="join" id="join">
+
+        <!-- 아이디 입력 필드 -->
+
+        <h3>
+            <label for="ID">아이디</label>
+        </h3>
+        <span class="join_inputID">
+            <input type="text" id="ID" maxlength="10" class="join_inputCheck">
+        </span>
+        <div class="join_list">
+            <span id="idError"></span>
+        </div>
+
+        <!-- 비밀번호 입력 필드 -->
+        <h3>
+            <label for="PW">비밀번호</label>
+        </h3>
+        <span class="join_inputPW">
+            <input type="password" id="PW" maxlength="20" class="join_inputCheck">
+        </span>
+
+        <div class="join_list">
+            <span id="pwError"></span>
+        </div>
+
+        <!-- 비밀번호 재입력 필드 -->
+        <h3>
+            <label for="PW_2">비밀번호 재입력</label>
+        </h3>
+        <span class="join_inputPW">
+            <input type="password" id="PW_2" maxlength="20" class="join_inputCheck">
+        </span>
+        <div class="join_list">
+            <span id="pwCheckError"></span>
+        </div>
+
+        <br>
+
+        <!-- 가입 버튼 area -->
+        <div class="join_btnArea">
+            <button id="joinBtn" class="join_btn">
+                가입하기
+            </button>
+            <!-- <input type="submit" value="가입하기" id="joinBtn" class="join_btn"> -->
+
+        </div>
+    </form>
+
+</body>
+
+</html>

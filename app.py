@@ -1,18 +1,60 @@
+# 해시함수 사용을 위한 hashlib 모듈 설치
+import hashlib
+# 토큰에 만료시간을 줘야하기 때문에, datetime 모듈도 사용합니다.
+import datetime
+# JWT 패키지를 사용합니다. (설치해야할 패키지 이름: PyJWT)
+import jwt
 from pymongo import MongoClient
-import requests
-from bs4 import BeautifulSoup
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, redirect, render_template, request, jsonify, url_for, session
+import certifi
+
+ca = certifi.where()
 
 app = Flask(__name__)
 
 client = MongoClient(
-    'mongodb+srv://hyeunseung:qlqjsgustmd1)@cluster0.jwlfweq.mongodb.net/?retryWrites=true&w=majority')
+    'mongodb+srv://hyeunseung:qlqjsgustmd1)@cluster0.jwlfweq.mongodb.net/?retryWrites=true&w=majority', tlsCAFile=ca)
 db = client.Practice
 
+# JWT 시크릿 키 입니다.
+OUR_SECRET_KEY = 'TEAM12'
+
+
+##########################
+## HTML 넘기는 부분             ##
+##########################
 
 @app.route('/')
 def home():
-    return render_template('board.html')
+    return render_template('login.html')
+
+
+@app.route('/join')
+def join():
+    return render_template('join.html')
+
+
+@app.route('/login')
+def login():
+    # 정보를 가져올때,이 args를 사용한다.
+    msg = request.args.get("msg")
+    return render_template('login.html', msg=msg)
+
+
+@app.route('/board')
+def board():
+    token_receive = request.cookies.get("userToken")
+
+    try:
+        payload = jwt.decode(token_receive, OUR_SECRET_KEY,
+                             algorithms=['HS256'])
+        user_info = db.gameReview_user.find_one({"id": payload['id']})
+        return render_template('board.html', id=user_info['id'])
+
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
 
 
 @app.route("/board/get", methods=["GET"])
@@ -69,6 +111,10 @@ def board_get_reply():
     return jsonify({'board_reply_list': board_reply_list})
 
 
+##################################################
+## 구현되지 않은 댓글 카운트 기능에 대한 단락입니다             ##
+## 해당 파트는 제가 추후에 업데이트 할 것입니다                  ##
+##################################################
 # @app.route("/board/get/reply/cnt", methods=["GET"])
 # def board_get_reply_cnt():
 #     ########################일단 리스트 다 가져옴
@@ -89,6 +135,116 @@ def board_get_reply():
 #     print(board_reply_cntList)
 
     # return jsonify({'board_reply_list': board_reply_list})
+
+
+##########################
+## 로그인을 위한 API              ##
+##########################
+
+# [회원가입 API]
+# id, pw, nickname을 받아서, mongoDB에 저장합니다.
+# 저장하기 전에, pw를 sha256 방법(=단방향 암호화. 풀어볼 수 없음)으로 암호화해서 저장합니다.
+@app.route('/join/idCheck', methods=['POST'])
+def api_join_idCheck():
+    join_ID_receive = request.form['join_IDcheck_give']
+
+    all_users = list(db.gameReview_user.find({}, {'_id': False}))
+    all_users_id = []
+
+    for all_user in all_users:
+        all_users_id.append(all_user['id'])
+
+    print(all_users_id)
+    print(join_ID_receive)
+
+    if join_ID_receive in all_users_id:
+        return jsonify({'result': 'fail'})
+    else:
+        return jsonify({'result': 'success'})
+
+
+@app.route('/join', methods=['POST'])
+def api_join():
+    join_ID_receive = request.form['join_ID_give']
+    join_PW_receive = request.form['join_PW_give']
+
+    pw_hash = hashlib.sha256(join_PW_receive.encode('utf-8')).hexdigest()
+
+    all_users = list(db.gameReview_user.find({}, {'_id': False}))
+    all_users_id = []
+
+    for all_user in all_users:
+        all_users_id.append(all_user['id'])
+
+    print(all_users_id)
+    print(join_ID_receive)
+
+    if join_ID_receive in all_users_id:
+        return jsonify({'msg': '중복된 ID입니다ㅠ'})
+    else:
+        db.gameReview_user.insert_one(
+            {'id': join_ID_receive, 'pw': pw_hash})
+        return jsonify({'result': 'success'})
+
+
+# [로그인 API]
+# id, pw를 받아서 맞춰보고, 토큰을 만들어 발급합니다.
+@app.route('/login/api', methods=['POST'])
+def api_login():
+    login_id_receive = request.form['login_id_give']
+    login_pw_receive = request.form['login_pw_give']
+
+    # 회원가입 때와 같은 방법으로 pw를 암호화합니다.
+    pw_hash = hashlib.sha256(login_pw_receive.encode('utf-8')).hexdigest()
+
+    # id, 암호화된pw을 가지고 해당 유저를 찾습니다.
+    login_result = db.gameReview_user.find_one(
+        {'id': login_id_receive, 'pw': pw_hash})
+
+    # 찾으면 JWT 토큰을 만들어 발급합니다.
+    if login_result is not None:
+        # JWT 토큰에는, payload와 시크릿키가 필요합니다.
+        # 시크릿키가 있어야 토큰을 디코딩(=풀기) 해서 payload 값을 볼 수 있습니다.
+        # 아래에선 id와 exp를 담았습니다. 즉, JWT 토큰을 풀면 유저ID 값을 알 수 있습니다.
+        # exp에는 만료시간을 넣어줍니다. 만료시간이 지나면, 시크릿키로 토큰을 풀 때 만료되었다고 에러가 납니다.
+        payload = {
+            'id': login_id_receive,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1)
+        }
+        token = jwt.encode(payload, OUR_SECRET_KEY, algorithm='HS256')
+
+        # token을 줍니다.
+        return jsonify({'result': 'success', 'token': token})
+    # 찾지 못하면
+    else:
+        return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다!'})
+
+
+@app.route('/login/validCheck', methods=['GET'])
+def login_valid():
+    token_receive = request.cookies.get('userToken')
+
+    # try / catch 문?
+    # try 아래를 실행했다가, 에러가 있으면 except 구분으로 가란 얘기입니다.
+
+    try:
+        # token을 시크릿키로 디코딩합니다.
+        # 보실 수 있도록 payload를 print 해두었습니다. 우리가 로그인 시 넣은 그 payload와 같은 것이 나옵니다.
+        payload = jwt.decode(token_receive,
+                             OUR_SECRET_KEY,
+                             algorithms=['HS256'])
+        print(payload)
+
+        # payload 안에 id가 들어있습니다. 이 id로 유저정보를 찾습니다.
+        # 여기에선 그 예로 닉네임을 보내주겠습니다.
+        userinfo = db.gameReview_user.find_one(
+            {'id': payload['id']}, {'_id': False})
+        return jsonify({'result': 'success', 'id': userinfo['id']})
+    except jwt.exceptions.DecodeError:
+        return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
+    except jwt.ExpiredSignatureError:
+        # 위를 실행했는데 만료시간이 지났으면 에러가 납니다.
+        return jsonify({'result': 'fail', 'msg': '로그인 시간이 만료되었습니다.'})
 
 
 if __name__ == '__main__':

@@ -7,6 +7,10 @@
 
     <!-- #########Font######### -->
     <link ref="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+    <!-- 제이쿼리-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- 제이쿼리 쿠키 컨트롤 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
     <title>gamerCommunity | freeBoard</title>
 </head>
@@ -107,6 +111,7 @@
         boardGet();
         boardReply_Get();
         boardReply_cnt_Get()
+        loginValidCheck()
     });
     function openSubmit() {
         $("#board_submit").show()
@@ -122,6 +127,23 @@
 
     function boardReply_close(num) {
         $("#board_submit_reply_wrap" + num).hide()
+    }
+
+    // function loginValidCheck() {
+    //         $.ajax({
+    //             type: "GET",
+    //             url: "/login/validCheck",
+    //             data: {},
+    //             success: function (response) {
+    //                 console.log(response)
+    //             }
+    //         })
+        // }
+
+    function logout(){
+    $.removeCookie('userToken');
+    alert('로그아웃!')
+    window.location.href='/login'
     }
 
 
@@ -140,6 +162,7 @@
 
                 let board_lists = response['board_list']
                 let replyCnt = 0;
+                
 
                 for (let i = 0; i < board_lists.length; i++) {
                     let board_id = board_lists[i]['id']
@@ -327,6 +350,7 @@
         <br>
         <button onclick="openSubmit()" class="writeBtn">게시글 작성<span class="keyDot" style="color: #3A7BD5; font-size: 32px;">.</span></button>
         <br>
+        <button onclick="logout()" class="writeBtn" style="margin-top: 20px;">로그아웃</button>
     
         <!-- ##########글쓰기 버튼을 누르면 나오는 창입니다.############# -->
         <div class="board_submit" id="board_submit">

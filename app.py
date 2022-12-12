@@ -7,6 +7,8 @@ import jwt
 from pymongo import MongoClient
 from flask import Flask, redirect, render_template, request, jsonify, url_for, session
 import certifi
+from bs4 import BeautifulSoup
+import requests
 
 ca = certifi.where()
 
@@ -47,7 +49,7 @@ def login():
     return render_template('login.html', msg=msg)
 
 
-@app.route('/board')
+@app.route('/board', methods=['GET'])
 def board():
     token_receive = request.cookies.get("userToken")
 
@@ -56,6 +58,22 @@ def board():
                              algorithms=['HS256'])
         user_info = db.gameReview_user.find_one({"id": payload['id']})
         return render_template('board.html', id=user_info['id'])
+
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
+
+
+@app.route('/main', methods=['GET'])
+def main():
+    token_receive = request.cookies.get("userToken")
+
+    try:
+        payload = jwt.decode(token_receive, OUR_SECRET_KEY,
+                             algorithms=['HS256'])
+        user_info = db.gameReview_user.find_one({"id": payload['id']})
+        return render_template('main.html', id=user_info['id'])
 
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
@@ -251,6 +269,50 @@ def login_valid():
     except jwt.ExpiredSignatureError:
         # 위를 실행했는데 만료시간이 지났으면 에러가 납니다.
         return jsonify({'result': 'fail', 'msg': '로그인 시간이 만료되었습니다.'})
+
+############################
+## 메인페이지 크롤링 파트입니다 ##
+############################
+
+# bs4 관련 네이밍 앞에 게임관련으로 변경하였습니다!
+# 데이터베이스 collection은 gameList로 설정하였습니다!
+
+
+db.gameList.delete_many({})
+
+# URL을 읽어서 HTML를 받아오고,
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
+gamedata = requests.get(
+    'https://www.gamemeca.com/ranking.php', headers=headers)
+
+# HTML을 BeautifulSoup이라는 라이브러리를 활용해 검색하기 용이한 상태로 만듦
+gameSoup = BeautifulSoup(gamedata.text, 'html.parser')
+
+# select를 이용해서, tr들을 불러오기
+games = gameSoup.select(
+    '#content > div.ranking_list > div.rank-list > div.content-left > table > tbody > tr')
+
+# movies (tr들) 의 반복문을 돌리기
+for game in games:
+    # movie 안에 a 가 있으면,
+    rank = game.select_one('span.rank').text
+    name = game.select_one('div.game-name > a').text
+    img = game.select_one('img')['src']
+    doc = {
+        'rank': rank,
+        'name': name,
+        'img': img
+    }
+    db.gameList.insert_one(doc)
+#    if name is not None:
+#       print(rank, name, img)
+
+
+@app.route("/main/posting", methods=["GET"])
+def gameList_get():
+    games_list = list(db.gameList.find({}, {'_id': False}))
+    return jsonify({'games': games_list})
 
 
 if __name__ == '__main__':

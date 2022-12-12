@@ -39,6 +39,9 @@
     // 일단 내가 준비한 자바스크립트가 준비되면 실행되어야 하니까!!
     // 왜 이걸 사용했냐면, 처음에는 그냥 스크립트를 작성하니까 html이 준비되기도 전에 document 객체에 대한 함수들이 실행되는 문제가 나오는 가능성이 있었습니다.
     // 예를 들면, 밑에보시면 저는 입력 필드의 값을 하나의 class로 묶어서 값을 받아오려고 하는데 이게 준비되기도 전에 자바스크립트가 실행되어버리기 때문입니다.
+    function goLogin() {
+        window.location.href = '/login'
+    }
     window.onload = function () {
 
         // 먼저 html의 데이터들을 싹 다 긁어옵니다.
@@ -113,6 +116,8 @@
             errorMsgReset(error)
         }
 
+        //  함수 만들고 버튼에다가 onclick으로 달아줘도 됩니다!
+        //  근데 그냥 이렇게도 되나 하고 위에서 복사해서 써 봤습니다.
         document.getElementById('joinBtn').onclick = function () {
             errorMsgReset(error);
 
@@ -180,6 +185,7 @@
                     if (response['result'] == 'success') {
                         alert('회원가입 완료!')
                         window.location.href = '/login'
+                        return
                     }
                     if (response['result'] == 'fail') {
                         alert(response['msg'])
@@ -203,6 +209,17 @@
         src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
         font-weight: 400;
         font-style: normal;
+    }
+
+    a {
+        text-decoration: none;
+        color: #2b2b2b;
+
+    }
+
+    a:hover {
+        background-color: #F1F3F5;
+        font-size: 16.5px;
     }
 
     input {
@@ -232,8 +249,7 @@
         padding-top: 47px;
         padding-left: 45px;
 
-        margin-top: 200px;
-        margin-left: 50px;
+        margin: 200px auto 0 auto;
 
         background-color: white;
 
@@ -264,6 +280,24 @@
         background-color: #B4B7F1;
         cursor: pointer;
     }
+
+    .navBar {
+        font-family: Pretendard-Regular;
+        font-weight: 400;
+        font-size: 16px;
+
+        border: 1px solid #a6a6a6;
+        border-radius: 5px;
+        width: 206px;
+        height: 30px;
+
+        padding-top: 2px;
+        padding-left: 8px;
+
+        background-color: white;
+
+        margin-left: 86%;
+    }
 </style>
 
 
@@ -272,13 +306,15 @@
     <!-- 왜냐면 나는 여기 html 안에 있는 class와 id를 적극적으로 활용하기 위한 전략을 사용할 것이기 때문입니다! -->
     <!-- div로 묶어주니 html의 값을 가져오지 못하는 문제가 있었습니다. -->
     <!-- form이라는 게 input의 value를 넘길 때 쓰이는 것이니 해당 html 의 value를 취합할 수 있었습니다.  -->
-    <div class="navBar">
+
+    <!-- #nav 바가 굳이 있어야되나 싶어서 주석처리 -->
+    <!-- <div class="navBar">
         <a href="/main">gameReview</a>
         <span>&nbsp; | &nbsp;</span>
         <a href="/board">freeBoard</a>
-    </div>
+    </div> -->
 
-    <form name="join" id="join" class="join">
+    <form name="join" id="join" class="join" onsubmit="return false">
 
 
         <!-- 아이디 입력 필드 -->
@@ -292,7 +328,7 @@
                     style="width: 240px; position: relative; right: 24px">
             </span>
             <div class=" join_list">
-                <span id="idError" style="position: relative; right: 24px"></span>
+                <span id="idError" style="position: relative; right: 24px; color: red;"></span>
             </div>
             <hr style="position:relative; right: 24px">
             <!-- 비밀번호 입력 필드 -->
@@ -306,7 +342,7 @@
             </span>
 
             <div class=" join_list">
-                <span id="pwError" style="position: relative; right: 24px"></span>
+                <span id="pwError" style="position: relative; right: 24px; color: red;"></span>
             </div>
             <hr style="position:relative; right: 24px">
             <!-- 비밀번호 재입력 필드 -->
@@ -319,7 +355,7 @@
                     style="width: 240px; position: relative; right: 24px">
             </span>
             <div class=" join_list">
-                <span id="pwCheckError" style="position: relative; right: 24px"></span>
+                <span id="pwCheckError" style="position: relative; right: 24px; color: red;"></span>
             </div>
             <hr style="position:relative; right: 24px">
             <br>
@@ -329,7 +365,7 @@
                 <button id="joinBtn" class="join_btn">
                     가입하기
                 </button>
-                <button id="backBtn" class="back_btn">
+                <button id="backBtn" class="back_btn" onclick="goLogin()">
                     가입취소
                 </button>
                 <!-- <input type="submit" value="가입하기" id="joinBtn" class="join_btn"> -->

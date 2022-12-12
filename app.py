@@ -52,12 +52,14 @@ def login():
 
 @app.route('/board', methods=['GET'])
 def board():
+
     token_receive = request.cookies.get("userToken")
 
     try:
         payload = jwt.decode(token_receive, OUR_SECRET_KEY,
                              algorithms=['HS256'])
         user_info = db.gameReview_user.find_one({"id": payload['id']})
+        print(user_info['id'])
         return render_template('board.html', id=user_info['id'])
 
     except jwt.exceptions.DecodeError:

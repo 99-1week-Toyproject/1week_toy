@@ -12,6 +12,9 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 
+    <!-- 제이쿼리 쿠키 컨트롤 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
     <title>gamerCommunity | main</title>
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
     <style>
@@ -94,11 +97,18 @@
             show_card();
         });
 
+        function logout() {
+            // alert('check')
+            $.removeCookie('userToken');
+            alert('로그아웃! 고마웠어요 ^0^')
+            window.location.href = '/login'
+        }
+
         function show_card() {
-            // $('#card-list').empty()
+            $('#card-list').empty()
             $.ajax({
                 type: "GET",
-                url: "/main/posting",
+                url: "/main/posts",
                 data: {},
                 success: function (response) {
                     console.log(response)
@@ -107,31 +117,69 @@
                         let rank = rows[i]['rank']
                         let name = rows[i]['name']
                         let img = rows[i]['img']
+                        let star = rows[i]['star']
+                        let people = rows[i]['people']
+                        let average = rows[i]['average'].toFixed(1)
 
                         let temp_html = ``
                         temp_html = `<div class="col">
-                                                <div class="card">
-                                                    <img src="${img}"
-                                                        class="card-img-top" alt="...">
-                                                    <div class="card-body">
-                                                        <h5 class="card-title">${rank}등 : ${name}</h5>
+                                                    <div class="card">
+                                                        <img src="${img}"
+                                                            class="card-img-top" alt="...">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">${rank}등 : ${name}</h5>
+                                                            <br>
+                                                            <h5>평점 : ${average}</h5>
+                                                            <h6>[평점 등록하기]</h6>
+                                        <div class="input-group input-group-sm mb-3">
+                                                <label class="input-group-text" for="inputGroupSelect01">평점</label>
+                                                <select class="form-select" id="inputGroupSelect${rank}">
+                                                    <option selected>-- 선택하기 --</option>
+                                                    <option value="1">⭐</option>
+                                                    <option value="2">⭐⭐</option>
+                                                    <option value="3">⭐⭐⭐</option>
+                                                    <option value="4">⭐⭐⭐⭐</option>
+                                                    <option value="5">⭐⭐⭐⭐⭐</option>
+                                                </select>
+                                            </div>
+                                        <button type="button" onclick="get_star(${rank})" class="btn btn-outline-secondary btn-sm">등록</button>
+                                        <p>참여자 수 : ${people}</p>
+                                        </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>`
+                                                </div>`
                         $('#card-list').append(temp_html)
                     }
                 }
             });
         }
+
+        function get_star(num) {
+            let star = $("#inputGroupSelect" + num).val();
+            $.ajax({
+                type: "POST",
+                url: "/main/star",
+                data: { star_give: star, rank_give: num },
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+
+
+
     </script>
 </head>
 <header>
     <h1>프로젝트</h1>
-    <nav>
-        <button type="button" class="btn btn-outline-secondary btn-sm">랭킹</button>
-        <button type="button" class="btn btn-outline-secondary btn-sm">자유게시판</button>
-        <button type="button" class="btn btn-outline-secondary btn-sm">로그아웃</button>
-    </nav>
+    <div>
+        <button type="button" class="btn btn-outline-secondary btn-sm" style="pointer-events: none;">랭킹</button>
+        <button onclick="location.href='board'" type="button" class="btn btn-outline-secondary btn-sm">자유게시판</button>
+        <button onclick="logout()" type="button" class="btn btn-outline-secondary btn-sm">로그아웃</button>
+
+    </div>
 </header>
 
 <body>

@@ -59,7 +59,6 @@ def board():
         payload = jwt.decode(token_receive, OUR_SECRET_KEY,
                              algorithms=['HS256'])
         user_info = db.gameReview_user.find_one({"id": payload['id']})
-        print(user_info['id'])
         return render_template('board.html', id=user_info['id'])
 
     except jwt.exceptions.DecodeError:
@@ -296,26 +295,50 @@ gameSoup = BeautifulSoup(gamedata.text, 'html.parser')
 games = gameSoup.select(
     '#content > div.ranking_list > div.rank-list > div.content-left > table > tbody > tr')
 
-# movies (tr들) 의 반복문을 돌리기
+# games (tr들) 의 반복문을 돌리기
 for game in games:
-    # movie 안에 a 가 있으면,
+    # game 안에 a 가 있으면,
     rank = game.select_one('span.rank').text
     name = game.select_one('div.game-name > a').text
     img = game.select_one('img')['src']
     doc = {
         'rank': rank,
         'name': name,
-        'img': img
+        'img': img,
+        'star': 0,
+        'people': 0,
+        'average': 0
     }
     db.gameList.insert_one(doc)
 #    if name is not None:
 #       print(rank, name, img)
 
 
-@app.route("/main/posting", methods=["GET"])
+@app.route("/main/posts", methods=["GET"])
 def gameList_get():
     games_list = list(db.gameList.find({}, {'_id': False}))
     return jsonify({'games': games_list})
+
+
+@app.route("/main/star", methods=["POST"])
+def star_post():
+    star_receive = request.form["star_give"]
+    rank_receive = request.form["rank_give"]
+    target = db.gameList.find_one({'rank': rank_receive})
+    target_people = target['people']
+    target_new_people = target_people + 1
+
+    target_star = target['star']
+    star_receive = float(star_receive)
+    target_new_star = target_star + star_receive
+
+    target_average = target['average']
+    target_new_average = target_new_star/target_new_people
+
+    db.gameList.update_one({'rank': rank_receive}, {'$set': {
+        'people': target_new_people, 'star': target_new_star, 'average': target_new_average}})
+
+    return jsonify({'msg': '등록 완료!'})
 
 
 if __name__ == '__main__':

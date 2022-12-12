@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- 제이쿼리 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- 제이쿼리로 쿠키 컨트롤 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <title>gamerCommunity | home</title>
+</head>
+<script>
+    {% if msg %}
+    alert("{{ msg }}")
+    {% endif %}
+
+
+    function login() {
+        let login_id_value = $('#ID').val()
+        let login_pw_value = $('#PW').val()
+
+        $.ajax({
+            type: "POST",
+            url: "/login/api",
+            data: {
+                login_id_give: login_id_value,
+                login_pw_give: login_pw_value
+            },
+            success: function (response) {
+                if (response['result'] == 'success') {
+                    // 로그인이 정상적으로 되면, 토큰을 받아옵니다.
+                    // 이 토큰을 userToken이라는 키 값으로 쿠키에 저장합니다.
+                    $.cookie('userToken', response['token']);
+
+                    alert('로그인 완료!')
+                    window.location.href = '/board'
+                } else {
+                    // 로그인이 안되면 에러메시지를 띄웁니다.
+                    alert(response['msg'])
+                }
+            }
+        })
+    }
+
+
+</script>
+
+<body>
+    <!-- 아이디 입력 필드입니다 -->
+    <h3>
+        <label for="ID">아이디</label>
+    </h3>
+    <span class="join_inputID">
+        <input type="text" id="ID" maxlength="10" class="join_inputCheck">
+    </span>
+    <!-- 비밀번호 입력 필드입니다 -->
+    <h3>
+        <label for="PW">비밀번호</label>
+    </h3>
+    <span class="join_inputPW">
+        <input type="password" id="PW" maxlength="20" class="join_inputCheck">
+    </span>
+
+    <div class="homeBtns" style="margin-top: 20px;">
+        <button id="loginbtn" onclick="login()">로그인하기</button>
+        <button id="joinBtn" onclick="location.href= 'join' ">회원가입</button>
+    </div>
+</body>
+
+</html>

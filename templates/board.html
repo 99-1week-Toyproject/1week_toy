@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- #########Font######### -->
+    <link ref="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+    <!-- 제이쿼리-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- 제이쿼리 쿠키 컨트롤 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <title>gamerCommunity | freeBoard</title>
+</head>
+<style>
+ @font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+    ul {
+        list-style-type: none;
+    }
+
+    button {
+        background-color: transparent;
+    }
+
+    textarea {
+        width: 50%;
+        height: 120px;
+        resize: none;
+    }
+
+    table {
+        background-color: #F6F6F6;
+        border-color: white;
+        border-collapse: collapse;
+    }
+
+    .topFixed{
+        position: fixed;
+        top: -20px;
+        width: 100%;
+        background-color: #F6F6F6;
+        z-index: 1;
+        
+    }
+
+
+    .navigationBar {
+        display: flex;
+        flex-direction: row-reverse;
+        left: 55%;
+        
+        
+        position: relative;
+        padding-bottom:6px;
+        width: 45%;
+
+        border-bottom: 1px solid #2b2b2b;
+    }
+    
+
+    .navigationBar_contents {
+        margin-right: 20px;
+    }
+
+    .mainContents{
+        position: relative;
+        top: 120px;
+        
+    }
+
+    .writeBtn{
+        font-family: Pretendard-Regular;
+        font-weight: 700;
+        font-size: 24px;
+
+        padding-bottom: 6px;
+
+        border:2px solid #2b2b2b;
+    }
+
+    .writeBtn:hover{
+        background-color: #F6F6F6;
+        
+    }
+    .board_submit {
+        
+        display: none;
+    }
+
+    .board_submit_reply_wrap {
+        display: none;
+        background-color: aliceblue;
+    }
+
+    .board_submit_reply {
+        display: flex;
+        align-items: flex-start;
+        margin-top: 20px;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        boardGet();
+        boardReply_Get();
+        boardReply_cnt_Get()
+        loginValidCheck()
+    });
+    function openSubmit() {
+        $("#board_submit").show()
+    }
+
+    function closeSubmit() {
+        $("#board_submit").hide()
+    }
+
+    function boardReply_open(num) {
+        $("#board_submit_reply_wrap" + num).show()
+    }
+
+    function boardReply_close(num) {
+        $("#board_submit_reply_wrap" + num).hide()
+    }
+
+    // function loginValidCheck() {
+    //         $.ajax({
+    //             type: "GET",
+    //             url: "/login/validCheck",
+    //             data: {},
+    //             success: function (response) {
+    //                 console.log(response)
+    //             }
+    //         })
+        // }
+
+    function logout(){
+    $.removeCookie('userToken');
+    alert('로그아웃!')
+    window.location.href='/login'
+    }
+
+
+     // #################################################
+    // ##  DB에서  title / text / reply 가져옵니다.                           ##
+    // ##  필요 요소의 변수에 index 부여합니다.                            ##
+    // #################################################
+
+    function boardGet() {
+        $.ajax({
+            type: "GET",
+            url: "/board/get",
+            data: {},
+            success: function (response) {
+                console.log(response['board_list'])
+
+                let board_lists = response['board_list']
+                let replyCnt = 0;
+                
+
+                for (let i = 0; i < board_lists.length; i++) {
+                    let board_id = board_lists[i]['id']
+                    let board_index = board_lists[i]['index']
+                    let board_text = board_lists[i]['text']
+                    let board_title = board_lists[i]['title']
+
+                    let addToBoard = ` <div class="board_contents_li">
+                                                <div class="index">${board_index}</div>
+                                                <h3 class="board_contents_title">
+                                                    <a>${board_title}</a>
+                                                    
+                                                    <button onclick = "boardReply_open(${board_index})">댓글달기</button>
+                                                </h3>
+                                                <h5>${board_text}</h5>
+                                                <div class = "replyCheck" id = "${board_index}" value = "">
+                                                    
+                                                </div>
+                                                    <div class="board_submit_reply_wrap" id="board_submit_reply_wrap${board_index}">
+                                                        <div class="board_submit_reply">
+                                                            <input id="board_reply_nickname${board_index}" type="text" placeholder="닉네임"
+                                                                style="margin-right: 20px;"></input>
+                                                            <textarea id="board_reply_text${board_index}" onkeydown="replyKeyDown()"
+                                                                placeholder="타인을 비난하는 댓글은 마음이 참 아파요 ㅠ&#13;&#10;Shift + Enter 키를 동시에 누르면 줄바꿈이 됩니다."></textarea>
+                                                        </div>
+                                                        <div class="board_submit_reply_btn">
+                                                            <button onclick="boardReply_submit(${board_index})">등록</button>
+                                                            <button onclick="boardReply_close(${board_index})">취소</button>    
+                                                        </div>
+                                                    </div>
+                                                <hr>
+                                            </div>`
+
+                    $("#board_content_wrap").append(addToBoard)
+                }
+            }
+        });
+    }
+
+    // ###########################################################
+    // ##  이번에 채택한 방식은 contents와 reply의 index를 연결하고                 ##
+    // ##   contents 하기에 reply를 list로 붙이는 방식으로 했습니다.                   ##
+    // ##   다른 아이디어도 몇 개 더 있었는데 일단 이 방식으로 채택하였습니다    ##
+    // ###########################################################
+
+    function boardReply_Get() {
+        $.ajax({
+            type: "GET",
+            url: "/board/get/reply",
+            data: {},
+            success: function (response) {
+                let replyList = response['board_reply_list']
+                let reply_cnt_checker = []
+                reply_cnt_checker.length = replyList.length
+
+            
+                console.log(response)
+
+
+                for (let i = 0; i < replyList.length; i++) {
+                    let board_reply_index = replyList[i]['index']
+                    let board_reply_name = replyList[i]['name']
+                    let board_reply_text = replyList[i]['text']
+
+                    let replyAdd = `<li>↳<b>${board_reply_name}</b>&nbsp;${board_reply_text}</li>`
+                    reply_cnt_checker[i] = board_reply_index
+                    
+
+                    $("#" + board_reply_index).append(replyAdd)
+                    
+                    for(let j =0; j < reply_cnt_checker; j++){
+                        if(board_reply_index == reply_cnt_checker){
+
+                        }
+                    }
+
+                }
+                // console.log(reply_cnt_checker)
+
+              
+            }
+
+
+        });
+    }
+// ####################################################################################
+// ##현재 구현에 실패한 기능입니다.                                                                                                 ##
+// ## 데이터 받아와서 하나 하나 찍어줄 때, <a>${board_title}</a> 밑에                                                    ##
+// ## <span class="reply_cnt${board_index}" id = "reply_cnt${board_index}">[${replyCnt}]</span>찍어주면서    ##
+// ## 댓글 갯수 찍어주려는 기능 구현하려고 했으나 시간 관계상 진행하지 못하였습니다                               ##
+// ####################################################################################
+
+// function boardReply_cnt_Get() {
+//         $.ajax({
+//             type: "GET",
+//             url: "/board/get/reply/cnt",
+//             data: {},
+//             success: function (response) {
+//                 console.log(response)
+//             }
+//         });
+//     }
+
+    // ###########################################################
+    // ##  contents post section입니다                                                         ##
+    // ###########################################################
+
+    function boardPost() {
+        let submit_id = $("#submit_id").val()
+        let submit_title = $("#submit_title").val()
+        let submit_text = $("#submit_text").val()
+        let submit_cntValue = 0
+
+        $.ajax({
+            type: "POST",
+            url: "/board/post",
+            data: {
+                board_id_give: submit_id,
+                board_title_give: submit_title,
+                board_text_give: submit_text,
+                board_cntValue_give: submit_cntValue
+            },
+            success: function (response) {
+                alert(response["msg"])
+                window.location.reload()
+
+            }
+        });
+    }
+
+     // ###########################################################
+    // ##  reply post section입니다.                                                             ##
+    // ##  댓글을 달고싶은 contents와 연결을 위해 contents index와 연동합니다.   ##
+    // ###########################################################
+
+    function boardReply_submit(board_contents_index) {
+        let reply_name = $("#board_reply_nickname" + board_contents_index).val()
+        let reply_text = $("#board_reply_text" + board_contents_index).val()
+
+        $.ajax({
+            type: "POST",
+            url: "/board/post/reply",
+            data: {
+                reply_name_give: reply_name,
+                reply_text_give: reply_text,
+                reply_index_give: board_contents_index
+            },
+            success: function (response) {
+                alert(response["msg"])
+                window.location.reload()
+
+            }
+        });
+    }
+
+
+    // #################################################
+    // ##  엔터키 누르면 자동입력되도록 하려고 했음,                    ##
+    // ##  하지만 입력필드가 다중이기 때문에                              ##
+    // ##  해당 코드는 에러를 유발할 확률이 굉장히 높아 제거         ##
+    // #################################################
+
+    
+    // function replyKeyDown() {
+    //     if (window.event.keyCode == 13) {
+    //         boardReply_submit()
+    //     }
+    // }
+
+
+</script>
+
+<body>
+    <div class="topFixed">
+        <h1 style="font-family: Pretendard-Regular; font-weight: 700; font-size: 40px; ">The Gamer Community<span class="keyDot" style="color: #3A7BD5; font-size: 60px;">.</span></h1>
+        <div class="navigationBar" style="font-family: Pretendard-Regular; font-size: 16px; font-weight: 700;">
+        <span class="navigationBar_contents">메인화면</span>
+        <span class="navigationBar_contents">자유게시판</span>
+        <span class="navigationBar_contents">Welcome to our world<span style="color: #3A7BD5; font-size: 16px;">!</span></span>
+        </div>     
+    </div>
+
+
+    <div class="mainContents">
+        <br>
+        <button onclick="openSubmit()" class="writeBtn">게시글 작성<span class="keyDot" style="color: #3A7BD5; font-size: 32px;">.</span></button>
+        <br>
+        <button onclick="logout()" class="writeBtn" style="margin-top: 20px;">로그아웃</button>
+    
+        <!-- ##########글쓰기 버튼을 누르면 나오는 창입니다.############# -->
+        <div class="board_submit" id="board_submit">
+            <div class="board_submit_id">
+                <h3>id</h3>
+                <!-- ##########데이터 전송을 위해 readonly 처리하였습니다!######### -->
+                <input id="submit_id" type="text" value="${사용자 아이디}" readonly></input>
+            </div>
+    
+            <div class="board_submit_title">
+                <h3>제목</h3>
+                <input id="submit_title" type=" text"></input>
+            </div>
+    
+            <div class="board_submit_text">
+                <h3>내용</h3>
+                <textarea id="submit_text"></textarea>
+            </div>
+            <br>
+    
+            <div class="board_submit_btns">
+                <button onclick="boardPost()">등록하기</button>
+                <button onclick="closeSubmit()">취소</button>
+            </div>
+        </div>
+        <br>
+    
+        <ul class="board_contents_wrap" id="board_content_wrap">
+            <li class="board_contents">
+                <div class="board_contents_li">
+                </div>
+            </li>
+        </ul>
+    </div>
+    
+
+
+
+</body>
+
+</html>

@@ -205,7 +205,7 @@ def api_join():
     print(join_ID_receive)
 
     if join_ID_receive in all_users_id:
-        return jsonify({'msg': '중복된 ID입니다ㅠ'})
+        return jsonify({'result': 'fail', 'msg': '중복된 ID입니다ㅠ'})
     else:
         db.gameReview_user.insert_one(
             {'id': join_ID_receive, 'pw': pw_hash})

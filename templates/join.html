@@ -180,10 +180,12 @@
                     if (response['result'] == 'success') {
                         alert('회원가입 완료!')
                         window.location.href = '/login'
-                    } else {
+                    }
+                    if (response['result'] == 'fail') {
                         alert(response['msg'])
                         location.reload()
                     }
+
                 }
             });
         }

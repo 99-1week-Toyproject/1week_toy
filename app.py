@@ -14,9 +14,6 @@ ca = certifi.where()
 
 app = Flask(__name__)
 
-client = MongoClient(
-    'mongodb+srv://hyeunseung:qlqjsgustmd1)@cluster0.jwlfweq.mongodb.net/?retryWrites=true&w=majority', tlsCAFile=ca)
-db = client.Practice
 
 # JWT 시크릿 키 입니다.
 OUR_SECRET_KEY = 'TEAM12'
@@ -30,6 +27,10 @@ OUR_SECRET_KEY = 'TEAM12'
 ##########################
 ## HTML 넘기는 부분             ##
 ##########################
+
+client = MongoClient(
+    'mongodb+srv://hyeunseung:qlqjsgustmd1)@cluster0.jwlfweq.mongodb.net/?retryWrites=true&w=majority', tlsCAFile=ca)
+db = client.Practice
 
 
 @app.route('/')

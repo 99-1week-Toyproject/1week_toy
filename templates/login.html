@@ -117,21 +117,50 @@
         font-size: 16px;
 
         border: 1px solid transparent;
-        border-radius: 10px;
+        border-radius: 30px;
 
-        width: 250px;
-        height: 340px;
+        width: 350px;
+        height: 450px;
 
         padding-top: 47px;
         padding-left: 45px;
 
-        margin-top: 200px;
-        margin-left: 50px;
-
-        background-color: white;
-
         box-shadow: 0px 0px 10px 1px grey;
+
+
+        background-color: linen;
+        background-position: center;
+        background-size: cover;
+
+        position: relative;
+        left: 45%;
+        top: 25%;
+        margin: auto 0 auto 0;
     }
+
+    .ID{
+
+        margin-top: 60px;
+
+    }
+
+    .PW{
+        margin-top: 40px;
+    }
+
+    .homeBtns {
+
+        padding-right: 50px;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+
+
 
     .navBar {
         font-family: Pretendard-Regular;
@@ -151,6 +180,17 @@
         margin-left: 86%;
     }
 
+     body {
+
+        height: 100vh;
+
+        background-image: url('https://media1.giphy.com/media/3oEjHYlwvUK5p9AIbm/giphy.gif?cid=790b7611409e567ec37b8024ddbc99e1baebe84110828a6e&rid=giphy.gif&ct=g');
+        background-position: center;
+        background-size: cover;
+    }
+
+
+
 </style>
 
 
@@ -161,29 +201,32 @@
         <a href="/board">freeBoard</a>
     </div>
 
-    <div class="mypost">
-
     <div class="loginField">
         <!-- 아이디 입력 필드입니다 -->
-        <h3>
-            <label for="ID">아이디</label>
-        </h3>
-        <hr style="position:relative; right: 24px">
-        <span class="join_inputID">
+        <div class="ID">
+            <h3>
+                <label for="ID">아이디</label>
+            </h3>
+            <hr style="position:relative; right: 24px">
+            <span class="join_inputID">
             <input type="text" id="ID" maxlength="10" class="join_inputCheck" placeholder="아이디를 입력해 주세요!"
-                style="width: 240px; position: relative; right: 24px;">
+                   style="width: 240px; position: relative; right: 24px; background-color: linen;">
         </span>
-        <hr style="position:relative; right: 24px">
+            <hr style="position:relative; right: 24px">
+        </div>
         <!-- 비밀번호 입력 필드입니다 -->
-        <h3>
-            <label for="PW">비밀번호</label>
-        </h3>
-        <hr style="position:relative; right: 24px">
-        <span class="join_inputPW">
+        <div class="PW">
+            <h3>
+                <label for="PW">비밀번호</label>
+            </h3>
+            <hr style="position:relative; right: 24px">
+            <span class="join_inputPW">
             <input type="password" id="PW" maxlength="20" class="join_inputCheck" placeholder="비밀번호를 입력해 주세요!"
-                style="width: 240px; position: relative; right: 24px;">
+                   style="width: 240px; position: relative; right: 24px; background-color: linen;">
         </span>
-        <hr style="position:relative; right: 24px">
+            <hr style="position:relative; right: 24px">
+
+            <div class="PW">
 
         <div class="homeBtns" style="margin-top: 20px;">
             <button id="loginbtn" onclick="login()">로그인하기</button>

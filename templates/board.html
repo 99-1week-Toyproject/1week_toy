@@ -6,7 +6,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <!-- #########Font######### -->
-    <link ref="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+    <link ref="stylesheet" type="text/css"
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
     <!-- 제이쿼리-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- 제이쿼리 쿠키 컨트롤 -->
@@ -15,25 +16,90 @@
     <title>gamerCommunity | freeBoard</title>
 </head>
 <style>
- @font-face {
-    font-family: 'Pretendard-Regular';
-    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-weight: 400;
-    font-style: normal;
-}
+    @font-face {
+        font-family: 'Pretendard-Regular';
+        src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+        font-weight: 400;
+        font-style: normal;
+    }
+
+    * {
+        font-family: Pretendard-Regular;
+        font-weight: 400;
+        font-size: 16px;
+    }
 
     ul {
         list-style-type: none;
     }
 
-    button {
+    /* button {
         background-color: transparent;
+
+    } */
+    /* button {
+        background-color: white;
+        transition-property: background-color;
+        transition-duration: 0.2s;
     }
+
+    button:hover {
+        background-color: dodgerblue;
+        color: white;
+        cursor: pointer;
+    } */
 
     textarea {
         width: 50%;
         height: 120px;
         resize: none;
+    }
+
+    .navBar {
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    .navBar>a {
+        display: flex;
+        margin-right: 10px;
+        width: 92px;
+
+        border-radius: 5px;
+        align-items: center;
+        justify-content: center;
+
+        transition-property: background-color;
+        transition-duration: 0.2s;
+    }
+
+    .navBar>a:hover {
+        background-color: dodgerblue;
+        color: white;
+        cursor: pointer;
+    }
+
+    a {
+        text-decoration: none;
+        color: #2B2B2B;
+    }
+
+    .gtitle {
+
+        font-family: Pretendard-Regular;
+        font-weight: 700;
+        font-size: 24px;
+
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        margin-top: 2%;
+
+
+
     }
 
     table {
@@ -42,83 +108,65 @@
         border-collapse: collapse;
     }
 
-    .topFixed{
+    /* 상단 틀 고정 */
+    .topFixed {
         position: fixed;
         top: -40px;
         width: 100%;
         background-color: dodgerblue;
-        color : white;
+        color: white;
         z-index: 1;
     }
 
-    .topFixed > jbGrad01{
-        background: linear-gradient( to right, white, dodgerblue );
+    .topFixed>jbGrad01 {
+        background: linear-gradient(to right, white, dodgerblue);
 
     }
 
-    .navigationBar {
-        display: flex;
-        flex-direction: row-reverse;
-        left: 55%;
+    /* 네비바 기본 스타일 */
+
+    /* 게시글별 */
+    .mainContents {
         position: relative;
-        padding-bottom:6px;
-        width: 45%;
-        border-bottom: 1px solid #2b2b2b;
-    }
-    
-
-    .navigationBar_contents {
-        margin-right: 200px;
-    }
-    .mainContents{
-        position: relative;
-        top: 160px;
     }
 
-    .mainContents > button{
+    /* 게시글별 버튼 */
+    .mainContents>button {
         width: 200px;
         height: 50px;
         border-radius: 30px;
         border: 1px solid white;
 
     }
-    .test{
 
-        font-size : 20px;
-
-    }
-     .mainContents > button:hover {
-            border: 2px solid black;
-        }
-
-    .reply_gap{
-        padding-top: 10px;
-
-    }
-    .writeBtn{
-        font-family: Pretendard-Regular;
-        font-weight: 500;
-        font-size: 24px;
-        padding-bottom: 6px;
-        border:2px solid #2b2b2b;
-    }
-    .writeBtn:hover{
-        background-color: #F6F6F6;
-        
+    .test {
+        font-size: 20px;
     }
 
+    .reply_gap {
+        padding-top: 7px;
 
-    .write_image {
-    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7mOms-wwrWuTeRsFPXO1pt19h-B3Rh4iKVA&usqp=CAU");
     }
 
+    /* 댓글 게시 버튼 스타일 */
+    .board_submit_btns {
+        font-size: 20px;
+    }
+
+    /* 댓글 입력 박스 스타일 */
     .board_submit {
-        
+        margin-left: 40px;
         display: none;
     }
+
 
     .board_submit_reply_wrap {
         display: none;
+        margin-top: 10px;
+        border: 1px solid #2b2b2b;
+        border-radius: 3px;
+        padding-left: 10px;
+        padding-bottom: 15px;
         background-color: aliceblue;
     }
 
@@ -127,14 +175,90 @@
         align-items: flex-start;
         margin-top: 20px;
     }
+
+    .submitBtns>button {
+        background-color: white;
+        margin-left: 3.5vw;
+    }
+
+    .submitBtns>button:hover {
+        background-color: white;
+        margin-left: 3.5vw;
+        cursor: pointer;
+    }
+
+    .replyBtns {
+        border: 2px solid #2b2b2b;
+        background-color: white;
+        color: #2b2b2b;
+        font-size: 18px;
+        border-radius: 5px;
+        transition-property: background-color;
+        transition-duration: 0.2s;
+    }
+
+    .replyBtns:hover {
+        background-color: dodgerblue;
+        color: white;
+        cursor: pointer;
+    }
+
+    .board_submit {
+        margin-top: 10px;
+        border-radius: 3px;
+        padding-left: 10px;
+        padding-bottom: 12px;
+        border: 1px solid #2b2b2b;
+
+        background-color: aliceblue;
+    }
+
+    .board_submit_btns>button {
+        border: 2px solid #2b2b2b;
+        background-color: white;
+        color: #2b2b2b;
+        font-size: 18px;
+        border-radius: 5px;
+        transition-property: background-color;
+        transition-duration: 0.2s;
+    }
+
+    .board_submit_btns>button:hover {
+        background-color: dodgerblue;
+        color: white;
+        cursor: pointer;
+    }
+
+    .board_submit_reply_btn>button {
+        border: 2px solid #2b2b2b;
+        background-color: white;
+        color: #2b2b2b;
+        font-size: 18px;
+        border-radius: 5px;
+        transition-property: background-color;
+        transition-duration: 0.2s;
+    }
+
+    .board_submit_reply_btn>button:hover {
+        background-color: dodgerblue;
+        color: white;
+        cursor: pointer;
+    }
+
+    .header {
+        background-color: rgb(221, 238, 255);
+        border-bottom: 1px solid #2b2b2b;
+        position: relative;
+        top: -1.5vh;
+        height: 12vh;
+    }
 </style>
 <script>
     $(document).ready(function () {
         boardGet();
         boardReply_Get();
-        boardReply_cnt_Get()
-        loginValidCheck()
     });
+
     function openSubmit() {
         $("#board_submit").show()
     }
@@ -151,25 +275,14 @@
         $("#board_submit_reply_wrap" + num).hide()
     }
 
-    // function loginValidCheck() {
-    //         $.ajax({
-    //             type: "GET",
-    //             url: "/login/validCheck",
-    //             data: {},
-    //             success: function (response) {
-    //                 console.log(response)
-    //             }
-    //         })
-        // }
-
-    function logout(){
-    $.removeCookie('userToken');
-    alert('로그아웃!')
-    window.location.href='/login'
+    function logout() {
+        $.removeCookie('userToken');
+        alert('로그아웃!')
+        window.location.href = '/login'
     }
 
 
-     // #################################################
+    // #################################################
     // ##  DB에서  title / text / reply 가져옵니다.                           ##
     // ##  필요 요소의 변수에 index 부여합니다.                            ##
     // #################################################
@@ -184,9 +297,9 @@
 
                 let board_lists = response['board_list']
                 let replyCnt = 0;
-                
 
-                for (let i = board_lists.length -1; i < board_lists.length; i--) {
+
+                for (let i = board_lists.length - 1; i < board_lists.length; i--) {
                     let board_id = board_lists[i]['id']
                     let board_index = board_lists[i]['index']
                     let board_text = board_lists[i]['text']
@@ -203,19 +316,20 @@
                                                 </h2>
                                                 <h3>${board_text}</h3>
                                                 <h4><div class = "replyCheck" id = "${board_index}" value = ""></h4>
-                                                    <button onclick = "boardReply_open(${board_index})" style="background-color:dodgerblue; color : white; font-size: 20px; border-radius: 10px">댓글달기</button>
+                                                    <button class = "replyBtns" onclick = "boardReply_open(${board_index})">댓글달기</button>
                                                 </div>
                                                     <div class="board_submit_reply_wrap" id="board_submit_reply_wrap${board_index}">
                                                         <div class="board_submit_reply">
                                                             <input id="board_reply_nickname${board_index}" type="text" placeholder="닉네임"
                                                                 style="margin-right: 20px;">
                                                             <textarea id="board_reply_text${board_index}" onkeydown="replyKeyDown()"
-                                                                placeholder="타인을 비난하는 댓글은 마음이 참 아파요 ㅠ&#13;&#10;Shift + Enter 키를 동시에 누르면 줄바꿈이 됩니다."></textarea>
+                                                                placeholder="타인을 비난하는 댓글은 마음이 참 아파요 ㅠ&#13;&#10;Enter 키를 누르시면 줄바꿈이 됩니다!"></textarea>
                                                         </div>
                                                     <div class = "test">
-                                                        <div class="board_submit_reply_btn" style="margin-left: 1300px">
-                                                            <button onclick="boardReply_submit(${board_index})" style="background-color:dodgerblue; color : white; font-size: 20px;">등록</button>
-                                                            <button onclick="boardReply_close(${board_index})" style="background-color: cornflowerblue; color: white; font-size: 20px;">취소</button>
+                                                        <div class="board_submit_reply_btn" >
+
+                                                            <button onclick="boardReply_submit(${board_index})" >등록</button>
+                                                            <button onclick="boardReply_close(${board_index})" >취소</button>
                                                         </div>
                                                     </div>
                                                     </div>
@@ -243,7 +357,7 @@
                 let reply_cnt_checker = []
                 reply_cnt_checker.length = replyList.length
 
-            
+
                 console.log(response)
 
 
@@ -254,42 +368,39 @@
 
                     let replyAdd = `<li>↳<b class = "reply_gap">ID:${board_reply_name}</b>&nbsp;&nbsp;&nbsp;&nbsp;<a style = margin-left: 400px;>댓글:${board_reply_text}<a><p></li>`
                     reply_cnt_checker[i] = board_reply_index
-                    
+
 
                     $("#" + board_reply_index).append(replyAdd)
-                    
-                    for(let j =0; j < reply_cnt_checker; j++){
-                        if(board_reply_index == reply_cnt_checker){
+
+                    for (let j = 0; j < reply_cnt_checker; j++) {
+                        if (board_reply_index == reply_cnt_checker) {
 
                         }
                     }
 
                 }
                 // console.log(reply_cnt_checker)
-
-              
             }
-
-
         });
     }
-// ####################################################################################
-// ##현재 구현에 실패한 기능입니다.                                                                                                 ##
-// ## 데이터 받아와서 하나 하나 찍어줄 때, <a>${board_title}</a> 밑에                                                    ##
-// ## <span class="reply_cnt${board_index}" id = "reply_cnt${board_index}">[${replyCnt}]</span>찍어주면서    ##
-// ## 댓글 갯수 찍어주려는 기능 구현하려고 했으나 시간 관계상 진행하지 못하였습니다                               ##
-// ####################################################################################
 
-// function boardReply_cnt_Get() {
-//         $.ajax({
-//             type: "GET",
-//             url: "/board/get/reply/cnt",
-//             data: {},
-//             success: function (response) {
-//                 console.log(response)
-//             }
-//         });
-//     }
+    // ####################################################################################
+    // ##현재 구현에 실패한 기능입니다.                                                                                                 ##
+    // ## 데이터 받아와서 하나 하나 찍어줄 때, <a>${board_title}</a> 밑에                                                    ##
+    // ## <span class="reply_cnt${board_index}" id = "reply_cnt${board_index}">[${replyCnt}]</span>찍어주면서    ##
+    // ## 댓글 갯수 찍어주려는 기능 구현하려고 했으나 시간 관계상 진행하지 못하였습니다                               ##
+    // ####################################################################################
+
+    // function boardReply_cnt_Get() {
+    //         $.ajax({
+    //             type: "GET",
+    //             url: "/board/get/reply/cnt",
+    //             data: {},
+    //             success: function (response) {
+    //                 console.log(response)
+    //             }
+    //         });
+    //     }
 
     // ###########################################################
     // ##  contents post section입니다                                                         ##
@@ -318,7 +429,7 @@
         });
     }
 
-     // ###########################################################
+    // ###########################################################
     // ##  reply post section입니다.                                                             ##
     // ##  댓글을 달고싶은 contents와 연결을 위해 contents index와 연동합니다.   ##
     // ###########################################################
@@ -350,7 +461,7 @@
     // ##  해당 코드는 에러를 유발할 확률이 굉장히 높아 제거         ##
     // #################################################
 
-    
+
     // function replyKeyDown() {
     //     if (window.event.keyCode == 13) {
     //         boardReply_submit()
@@ -360,65 +471,79 @@
 
 </script>
 
-<body>
+<body width="100%" height="100%">
 
-    <div class="topFixed">
-        <h1 style="font-family: Pretendard-Regular; font-weight: 700; font-size: 40px;"> / / / / / / / /  The Gamer Community  / / / / / / / /<span class="keyDot" style="color: dodgerblue; font-size: 60px;">.</span></h1>
+    <div class="header" style="padding-top:  0.5vh;">
+        <h1 class="gtitle"
+            style="display:flex; justify-content: center; margin-top: 1.5vh; font-weight: 700; font-size: 25px;"> 게임
+            커뮤니티
+        </h1>
 
-        <div class="navigationBar" style="font-family: Pretendard-Regular; font-size: 20px; font-weight: 700;">
-        <span class="navigationBar_contents">메인화면</span>
-        <span class="navigationBar_contents">자유게시판</span>
-        <span class="navigationBar_contents">Welcome to our world<span style="color: #3A7BD5; font-size: 16px;">!</span></span>
-        </div>     
-    </div>
+        <div class=" navBar">
+            <div class="navBar">
+                <a onclick="logout()" href="">로그아웃</a>
 
-    <div class="mainContents" style="margin-bottom: 1000px">
-        <button onclick="logout()" class="btn btn-outline-secondary" style="font-size : 25px; float: right;"><img src=" https://cdn-icons-png.flaticon.com/512/3596/3596121.png" style="width:40px; height:40px;"><b>로그아웃</b></button>
-        <button onclick="openSubmit()" class="btn btn-outline-secondary" style="font-size : 25px; float: right;"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7mOms-wwrWuTeRsFPXO1pt19h-B3Rh4iKVA&usqp=CAU" style="width:40px; height:40px;"><b>게시글 작성</b><span class="keyDot" style="color: #3A7BD5; font-size: 30px;"></span></button>
-        <p>
-    <!-- ##########글쓰기 버튼을 누르면 나오는 창입니다.############# -->
-        <p>
-        <p>
-        <div class="board_submit" id="board_submit">
-        <div class="board_submit_id">
-            <h3>id</h3>
-
-            <!-- ##########데이터 전송을 위해 readonly 처리하였습니다!######### -->
-            <input id="submit_id" type="text" value="{{ id }}" readonly></input>
-        </div>
-
-        <div class="board_submit_title">
-            <h3>제목</h3>
-            <input id="submit_title" type="text"></input>
-        </div>
-
-        <div class="board_submit_text">
-            <h3>내용</h3>
-            <textarea id="submit_text"></textarea>
-        </div>
-        <br>
-
-        <div class="board_submit_btns">
-            <button onclick="boardPost()">등록하기</button>
-            <button onclick="closeSubmit()" style="font-size : 20px; float: right;">취소</button>
-        </div>
-    </div>
-    <br>
-
-    <ul class="board_contents_wrap" id="board_content_wrap">
-        <li class="board_contents">
-            <div class="board_contents_li">
+                <a style="background-color: dodgerblue; color: white; pointer-events: none;">자유게시판</a>
+                <a href="/main">메인화면</a>
             </div>
-        </li>
-    </ul>
+        </div>
+
+
+    </div>
+    <div class="mainContents" style="margin-bottom: 1000px">
+
+        <div class="submitBtns">
+            <button onclick="openSubmit()" class="btn btn-outline-secondary"
+                style="font-size : 20px; border: 1px solid #2B2B2B; border-radius: 5px; padding-bottom: 10px;">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7mOms-wwrWuTeRsFPXO1pt19h-B3Rh4iKVA&usqp=CAU"
+                    style="width:40px; height:40px; ">
+                게시글 작성
+
+            </button>
+        </div>
+
+
+
+
+
+        <!-- ##########글쓰기 버튼을 누르면 나오는 창입니다.############# -->
+
+        <div class="board_submit" id="board_submit">
+            <div class="board_submit_id">
+                <h3>ID</h3>
+                <!-- ##########데이터 전송을 위해 readonly 처리하였습니다!######### -->
+                <input id="submit_id" type="text" value="{{ id }}" readonly></input>
+            </div>
+            <div class="board_submit_title">
+                <h3>제목</h3>
+                <input id="submit_title" type="text"></input>
+            </div>
+            <div class="board_submit_text">
+                <h3>내용</h3>
+                <textarea id="submit_text"></textarea>
+            </div>
+            <br>
+            <div class="board_submit_btns">
+                <button onclick="boardPost()">등록하기</button>
+                <button onclick="closeSubmit()">취소</button>
+            </div>
+        </div>
+
+        <br>
+        <ul class="board_contents_wrap" id="board_content_wrap">
+            <li class="board_contents">
+                <div class="board_contents_li">
+                </div>
+            </li>
+        </ul>
     </div>
 
-<p>
-<p>
-<p>
+    <p>
+    <p>
+    <p>
 
-<p>
-<p>
+    <p>
+    <p>
 </body>
 
 </html>

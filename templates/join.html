@@ -226,15 +226,28 @@
     input {
         border: 0px solid;
         height: 25px;
+        background-color: linen;
         /* background-color: #F7F9FA; */
 
     }
 
     input:focus {
         outline: none;
-        background-color: #F7F9FA;
+
+        background-color: rgb(255, 225, 194);
+        height: 32px;
 
     }
+
+    .joinField_wrap {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+
+    }
+
 
     .join {
 
@@ -252,9 +265,9 @@
         padding-top: 47px;
         padding-left: 45px;
 
-        position: relative;
+        /* position: relative;
         left: 44%;
-        margin: auto 0 auto 0;
+        margin: auto 0 auto 0; */
 
         background-color: linen;
 
@@ -262,12 +275,17 @@
     }
 
     body {
+        height: 100%;
+        background-image: url('https://cdn.dribbble.com/users/1159713/screenshots/3397424/game-box-gif.gif');
+        background-position: center;
+        background-size: 85%;
 
-            background-image: url('https://cdn.dribbble.com/users/1159713/screenshots/3397424/game-box-gif.gif');
-            background-position: center;
-            background-size: 85%;
+        backdrop-filter: blur(3px);
 
-            padding-top: 300px;
+        /* padding-top: 300px; */
+        overflow: hidden;
+
+
 
     }
 
@@ -294,7 +312,8 @@
     }
 
     button:hover {
-        background-color: #B4B7F1;
+        background-color: rgb(255, 225, 194);
+        color: rgb(237, 136, 36);
         cursor: pointer;
     }
 
@@ -326,8 +345,6 @@
 
         margin-left: 86%;
     }
-
-
 </style>
 
 
@@ -344,65 +361,69 @@
         <a href="/board">freeBoard</a>
     </div> -->
 
+    <div class="joinField_wrap">
+        <form name="join" id="join" class="join" onsubmit="return false">
 
-    <form name="join" id="join" class="join" onsubmit="return false">
+            <!-- 아이디 입력 필드 -->
 
-        <!-- 아이디 입력 필드 -->
-        <div class="joinFied">
-            <h3>
-                <label for="ID">아이디</label>
-            </h3>
-            <hr style="position:relative; right: 24px">
-            <span class="join_inputID">
-                <input type="text" id="ID" maxlength="10" class="join_inputCheck" placeholder="아이디를 입력해 주세요!"
-                    style="width: 240px; background-color: linen; position: relative; right: 24px">
-            </span>
-            <div class=" join_list">
-                <span id="idError" style="position: relative; right: 24px; color: red;"></span>
+            <div class="joinField">
+                <h3>
+                    <label for="ID">아이디</label>
+                </h3>
+                <hr style="position:relative; right: 24px">
+                <span class="join_inputID">
+                    <input type="text" id="ID" maxlength="10" class="join_inputCheck" placeholder="아이디를 입력해 주세요!"
+                        style="width: 290px; position: relative; right: 24px">
+                </span>
+                <div class=" join_list">
+                    <span id="idError" style="position: relative; right: 24px; color: red;"></span>
+                </div>
+                <hr style="position:relative; right: 24px">
+                <!-- 비밀번호 입력 필드 -->
+                <h3>
+                    <label for="PW">비밀번호</label>
+                </h3>
+                <hr style="position:relative; right: 24px">
+                <span class="join_inputPW">
+                    <input type="password" id="PW" maxlength="20" class="join_inputCheck" placeholder="비밀번호를 입력해 주세요!"
+                        style="width: 290px; position: relative; right: 24px">
+                </span>
+
+                <div class=" join_list">
+                    <span id="pwError" style="position: relative; right: 24px; color: red;"></span>
+                </div>
+                <hr style="position:relative; right: 24px">
+                <!-- 비밀번호 재입력 필드 -->
+                <h3>
+                    <label for="PW_2">비밀번호 재입력</label>
+                </h3>
+                <hr style="position:relative; right: 24px">
+                <span class="join_inputPW">
+                    <input type="password" id="PW_2" maxlength="20" class="join_inputCheck"
+                        placeholder="비밀번호를 다시 입력해 주세요!" style="width: 290px; position: relative; right: 24px">
+                </span>
+                <div class=" join_list">
+                    <span id="pwCheckError" style="position: relative; right: 24px; color: red;"></span>
+                </div>
+                <hr style="position:relative; right: 24px">
+                <br>
+
+                <!-- 가입 버튼 area -->
+                <div class="join_btnArea" style="margin-left: 20px;">
+                    <button id="joinBtn" class="join_btn">
+                        가입하기
+                    </button>
+                    <button id="backBtn" class="back_btn" onclick="goLogin()">
+                        가입취소
+                    </button>
+                    <!-- <input type="submit" value="가입하기" id="joinBtn" class="join_btn"> -->
+
+                </div>
             </div>
-            <hr style="position:relative; right: 24px">
-            <!-- 비밀번호 입력 필드 -->
-            <h3>
-                <label for="PW">비밀번호</label>
-            </h3>
-            <hr style="position:relative; right: 24px">
-            <span class="join_inputPW">
-                <input type="password" id="PW" maxlength="20" class="join_inputCheck" placeholder="비밀번호를 입력해 주세요!"
-                    style="width: 240px; background-color: linen; position: relative; right: 24px">
-            </span>
+        </form>
+    </div>
 
-            <div class=" join_list">
-                <span id="pwError" style="position: relative; right: 24px; color: red;"></span>
-            </div>
-            <hr style="position:relative; right: 24px">
-            <!-- 비밀번호 재입력 필드 -->
-            <h3>
-                <label for="PW_2">비밀번호 재입력</label>
-            </h3>
-            <hr style="position:relative; right: 24px">
-            <span class="join_inputPW">
-                <input type="password" id="PW_2" maxlength="20" class="join_inputCheck" placeholder="비밀번호를 다시 입력해 주세요!"
-                    style="width: 240px; background-color: linen; position: relative; right: 24px">
-            </span>
-            <div class=" join_list">
-                <span id="pwCheckError" style="position: relative; right: 24px; color: red;"></span>
-            </div>
-            <hr style="position:relative; right: 24px">
-            <br>
 
-            <!-- 가입 버튼 area -->
-            <div class="join_btnArea" style="margin-left: 20px;">
-                <button id="joinBtn" class="join_btn">
-                    가입하기
-                </button>
-                <button id="backBtn" class="back_btn" onclick="goLogin()">
-                    가입취소
-                </button>
-                <!-- <input type="submit" value="가입하기" id="joinBtn" class="join_btn"> -->
-
-            </div>
-        </div>
-    </form>
 
 </body>
 

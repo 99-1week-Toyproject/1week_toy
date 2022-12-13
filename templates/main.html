@@ -12,14 +12,33 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 
+    <!-- #########Font######### -->
+    <link ref="stylesheet" type="text/css"
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+
     <!-- 제이쿼리 쿠키 컨트롤 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
     <title>gamerCommunity | main</title>
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'Pretendard-Regular';
+            src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+        }
+
         * {
-            font-family: 'Gowun Dodum', sans-serif;
+            font-family: Pretendard-Regular;
+            font-weight: 400;
+            font-size: 16px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #2b2b2b;
+
         }
 
         .mytitle {
@@ -51,7 +70,13 @@
 
         .mytitle>button:hover {
             border: 2px solid white;
+            background-color: dodgerblue;
         }
+
+        .people_wrap>button:hover {
+            background-color: dodgerblue;
+        }
+
 
         .mybtn {
             display: flex;
@@ -91,6 +116,30 @@
             align-items: center;
             margin-bottom: 20px;
         }
+
+        .navBar {
+            display: flex;
+            flex-direction: row-reverse;
+        }
+
+        .navBar>a {
+            display: flex;
+            margin-right: 10px;
+            width: 92px;
+
+            border-radius: 5px;
+            align-items: center;
+            justify-content: center;
+
+            transition-property: background-color;
+            transition-duration: 0.2s;
+        }
+
+        .navBar>a:hover {
+            background-color: dodgerblue;
+            color: white;
+            cursor: pointer;
+        }
     </style>
     <script>
         $(document).ready(function () {
@@ -127,10 +176,10 @@
                                                         <img src="${img}"
                                                             class="card-img-top" alt="...">
                                                         <div class="card-body">
-                                                            <h5 class="card-title">${rank}등 : ${name}</h5>
+                                                            <h5 class="card-title"><span style = "color:dodgerblue; font-size:20px;">${rank}.</span>  ${name}</h5>
                                                             <br>
-                                                            <h5>평점 : ${average}</h5>
-                                                            <h6>[평점 등록하기]</h6>
+                                                            <h5>평점  <span style = "color:dodgerblue; font-size:20px;">${average}</span></h5>
+                                                            <br>
                                         <div class="input-group input-group-sm mb-3">
                                                 <label class="input-group-text" for="inputGroupSelect01">평점</label>
                                                 <select class="form-select" id="inputGroupSelect${rank}">
@@ -142,8 +191,12 @@
                                                     <option value="5">⭐⭐⭐⭐⭐</option>
                                                 </select>
                                             </div>
-                                        <button type="button" onclick="get_star(${rank})" class="btn btn-outline-secondary btn-sm">등록</button>
-                                        <p>참여자 수 : ${people}</p>
+                                        
+                                            <div class = people_wrap style = "display: flex; align-items:baseline;">
+                                                <button type="button" onclick="get_star(${rank})" class="btn btn-outline-secondary btn-sm">등록</button>
+                                                <p style ="margin-left: 10px;">참여자 수 <span style = "color:dodgerblue; font-size:20px;"> ${people}</span></p>
+                                        </div>
+                                        
                                         </div>
                                                         </div>
                                                     </div>
@@ -167,12 +220,18 @@
             });
         }
 
+        function logout() {
+            $.removeCookie('userToken');
+            alert('로그아웃!')
+            window.location.href = '/login'
+        }
+
 
 
 
     </script>
 </head>
-<header>
+<!-- <header>
     <h1>프로젝트</h1>
     <div>
         <button type="button" class="btn btn-outline-secondary btn-sm" style="pointer-events: none;">랭킹</button>
@@ -180,12 +239,24 @@
         <button onclick="logout()" type="button" class="btn btn-outline-secondary btn-sm">로그아웃</button>
 
     </div>
-</header>
+</header> -->
 
 <body>
-    <div class="mytitle">
-        <h1>최고의 게임들</h1>
+    <h3 style="margin-left: 2.5vw; margin-top: 1.5vh;">당신의 게임에 투표해 주세요!</h3>
+
+    <div class="navBar">
+        <a onclick="logout()" href="">로그아웃</a>
+        <a href="/board">자유 게시판</a>
+        <a style="background-color: dodgerblue; color: white; pointer-events: none;">메인화면</a>
+
+
     </div>
+
+    <hr>
+
+    <!-- <div class="mytitle">
+        <h1>최고의 게임들</h1>
+    </div> -->
     <div class="mycards">
         <div class="row row-cols-1 row-cols-md-4 g-4" id="card-list">
         </div>

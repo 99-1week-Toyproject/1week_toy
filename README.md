@@ -28,6 +28,10 @@
 * 게시된 글에 댓글 기능
 
 ## overView
+* <img width="1552" alt="Screenshot 2022-12-13 at 7 14 18 PM" src="https://user-images.githubusercontent.com/118980125/207291147-6e2cc479-80ff-4d5e-8fab-70d542bdf12f.png">
+* <img width="1552" alt="Screenshot 2022-12-13 at 7 14 27 PM" src="https://user-images.githubusercontent.com/118980125/207291313-535cde91-2619-48d2-86fc-3ecf95e29ad8.png">
+* <img width="1552" alt="Screenshot 2022-12-13 at 7 16 00 PM" src="https://user-images.githubusercontent.com/118980125/207291364-637f60be-d3e6-4b0a-a54e-bfde8f5c1812.png">
+* <img width="1552" alt="Screenshot 2022-12-13 at 7 16 24 PM" src="https://user-images.githubusercontent.com/118980125/207291443-9f7c6201-cfc5-4957-a75d-f2d22e3ead84.png">
 
 
 ## link

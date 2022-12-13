@@ -7,6 +7,15 @@ import jwt
 from pymongo import MongoClient
 from flask import Flask, redirect, render_template, request, jsonify, url_for, session
 import certifi
+# 해시함수 사용을 위한 hashlib 모듈 설치
+import hashlib
+# 토큰에 만료시간을 줘야하기 때문에, datetime 모듈도 사용합니다.
+import datetime
+# JWT 패키지를 사용합니다. (설치해야할 패키지 이름: PyJWT)
+import jwt
+from pymongo import MongoClient
+from flask import Flask, redirect, render_template, request, jsonify, url_for, session
+import certifi
 from bs4 import BeautifulSoup
 import requests
 
@@ -341,5 +350,7 @@ def star_post():
     return jsonify({'msg': '등록 완료!'})
 
 
+if __name__ == '__main__':
+    app.run('0.0.0.0', port=5000, debug=True)
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
